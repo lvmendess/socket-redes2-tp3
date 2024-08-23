@@ -25,16 +25,18 @@ if("produto encontrado" in produto):
             print('Resposta do servidor:', response.decode())
         case 2:
             offers = 0
-            response = 'proposta recusada'
-            while(offers < 5 or response.decode()!='proposta aceita'):
+            response = ''
+            while(offers < 5):
                 offer = input('digite o valor que deseja pagar:')
                 clientSocket.send(offer.encode())
                 offers+=1
-                response = clientSocket.recv(1024)
-                print('Resposta do servidor:', response.decode())
+                response = clientSocket.recv(1024).decode()
+                print('Resposta do servidor:', response)
+                if('proposta aceita' in response):
+                    break;
 
-                response = clientSocket.recv(1024)
-                print('Resposta do servidor:', response.decode())
+            answer = clientSocket.recv(1024)
+            print('Resposta do servidor:', answer.decode())
         case _:
             response = clientSocket.recv(1024)
             print('Resposta do servidor:', response.decode())

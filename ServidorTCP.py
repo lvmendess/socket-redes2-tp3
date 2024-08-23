@@ -18,7 +18,7 @@ def greeting():
 
 def negotiate(product_name, valor):
 	valor = int(valor)
-	tolerancia = 15 #porcentagem de tolerância de preço
+	tolerancia = 20 #porcentagem de tolerância de preço
 	x=dict_Products.get(product_name)
 	min_preco = x * (1 - tolerancia / 100)
 	if min_preco <= valor <= x: #valor proposto deve ser maior ou igual ao preço mínimo tolerado mas não pode ultrapassar o valor original
@@ -43,30 +43,23 @@ while True:
 
 		match op:
 			case 1:
-				reply = 'compra realizada com sucesso'
+				reply = 'compra realizada com sucesso. volte sempre!'
 				connectionSocket.send(reply.encode())
 			case 2:
-				offers = 0;
+				offers = 0
 				response = ''
-				while(offers <= 5):
+				while(offers<5 and 'aceita' not in response):
 					offer = connectionSocket.recv(1024).decode()
-					offers +=1
 					response = negotiate(produto, offer)
+					offers +=1
 					connectionSocket.send(response.encode())
-
-					if(offers==5):
-						response = 'limite de propostas atingido. Volte sempre!'
-						connectionSocket.send(response.encode())
-						connectionSocket.close()
-						break;
 					
-					if(response=='proposta aceita'):
-						reply = 'compra realizada com sucesso. Volte sempre!'
-						connectionSocket.send(reply.encode())
-						connectionSocket.close()
-						break;
+				if('proposta aceita' in response):
+					reply = 'compra realizada com sucesso. volte sempre!'
+					connectionSocket.send(reply.encode())
+					connectionSocket.close()
 			case _:
-				reply = 'Okay. Volte sempre!'
+				reply = 'volte sempre!'
 				connectionSocket.send(reply.encode())
 	else:
 		reply = 'produto não encontrado'
