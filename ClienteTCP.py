@@ -9,7 +9,7 @@ clientSocket.send(sentence.encode())
 menu = clientSocket.recv(1024)
 print ('Resposta do servidor:', menu.decode())
 
-produto = input('Digite o nome do produto que deseja negociar:')
+produto = input('Digite o código do produto que deseja negociar:')
 clientSocket.send(produto.encode())
 produto = clientSocket.recv(1024).decode()
 print ('Resposta do servidor:', produto)
@@ -34,9 +34,12 @@ if("produto encontrado" in produto):
                 print('Resposta do servidor:', response)
                 if('proposta aceita' in response):
                     break;
-
-            answer = clientSocket.recv(1024)
-            print('Resposta do servidor:', answer.decode())
+            
+            if(offers>=5):
+                print('limite de propostas atingido')
+            else:
+                answer = clientSocket.recv(1024)
+                print('Resposta do servidor:', answer.decode())
         case _:
             response = clientSocket.recv(1024)
             print('Resposta do servidor:', response.decode())

@@ -1,5 +1,19 @@
 from socket import *
 
+products = {
+	'1': ('cerveja', 400),
+	'2' : ('salada', 220),
+	'3' : ('pão', 120),
+	'4' : ('espaguete', 240),
+	'5' : ('pizza', 600),
+	'6' : ('café', 300),
+	'7' : ('bolinho de carangueijo', 550),
+	'8' : ('bolo de chocolate', 400),
+	'9' : ('biscoitos', 280),
+	'10' : ('cafe da manhã completo', 700),
+	'11' : ('bolo rosa', 960)
+}
+
 dict_Products = {'cerveja': 400, 'salada': 220, 'baguete': 120, 'espaguete':240, 'pizza': 600,
 				 'cafe': 300, 'bolinho de carangueijo': 550, 'bolo de chocolate': 400,
 				 'biscoitos': 280, 'cafe da manhã completo': 700, 'bolo rosa': 960}
@@ -12,14 +26,16 @@ print('Servidor aguardando mensagens')
 
 def greeting():
 	product = "Bem vindo ao Stardrop Saloon" + "\n"
-	for k, v in dict_Products.items():
-		product += k + " - Preço:" + str(v) + " ouros" + "\n"
+	for k, v in products.items():
+		product += k + " - " + v[0] +" - Preço: " + str(v[1]) + " ouros" + "\n"
 	return product
 
-def negotiate(product_name, valor):
+def negotiate(product_key, valor):
 	valor = int(valor)
 	tolerancia = 20 #porcentagem de tolerância de preço
-	x=dict_Products.get(product_name)
+	for k, v in products.items():
+		if (k == product_key):
+			x = v[1]
 	min_preco = x * (1 - tolerancia / 100)
 	if min_preco <= valor <= x: #valor proposto deve ser maior ou igual ao preço mínimo tolerado mas não pode ultrapassar o valor original
 		return 'proposta aceita'
@@ -34,8 +50,11 @@ while True:
 		connectionSocket.send(reply.encode())
 
 	produto = connectionSocket.recv(1024).decode()
-	if produto in dict_Products.keys():
-		reply = 'produto encontrado. Preço inicial: '+str(dict_Products.get(produto));
+	if produto in products.keys():
+		for k, v in products.items():
+			if (k == produto):
+				x = v[1]
+		reply = 'produto encontrado. Preço inicial: '+str(x)+' ouros';
 		connectionSocket.send(reply.encode())
 
 		op = connectionSocket.recv(1024).decode()
