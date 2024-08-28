@@ -34,6 +34,13 @@ if("produto encontrado" in produto):
                 print('Resposta do servidor:', response)
                 if('proposta aceita' in response):
                     break;
+                else:
+                    ans = input('aceitar contraproposta (s/n)? ')
+                    clientSocket.send(ans.encode())
+                    if(ans == 's'):
+                        reply = clientSocket.recv(1024).decode()
+                        print('Resposta do servidor:', reply)
+                        exit();
             
             if(offers>=5):
                 print('limite de propostas atingido')
